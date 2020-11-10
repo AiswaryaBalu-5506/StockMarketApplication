@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompanyMicroService", "Comp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SectorMicroService", "SectorMicroService\SectorMicroService.csproj", "{9B27380B-EA36-4660-B938-33C2A1596080}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockExchangeMicroService", "StockExchangeMicroService\StockExchangeMicroService.csproj", "{BCE3A424-ED86-4AF2-9A33-6ABE6378A302}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{9B27380B-EA36-4660-B938-33C2A1596080}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B27380B-EA36-4660-B938-33C2A1596080}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B27380B-EA36-4660-B938-33C2A1596080}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCE3A424-ED86-4AF2-9A33-6ABE6378A302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCE3A424-ED86-4AF2-9A33-6ABE6378A302}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCE3A424-ED86-4AF2-9A33-6ABE6378A302}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCE3A424-ED86-4AF2-9A33-6ABE6378A302}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
