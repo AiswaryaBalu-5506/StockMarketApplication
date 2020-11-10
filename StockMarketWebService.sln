@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarketWebService", "StockMarketWebService\StockMarketWebService.csproj", "{5CEF7B97-4B99-44BD-830D-9B742F10027E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompanyMicroService", "CompanyMicroService\CompanyMicroService.csproj", "{02E062C2-BAE6-4A56-AA6F-24A6FBAA44E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{5CEF7B97-4B99-44BD-830D-9B742F10027E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CEF7B97-4B99-44BD-830D-9B742F10027E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CEF7B97-4B99-44BD-830D-9B742F10027E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02E062C2-BAE6-4A56-AA6F-24A6FBAA44E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02E062C2-BAE6-4A56-AA6F-24A6FBAA44E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02E062C2-BAE6-4A56-AA6F-24A6FBAA44E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02E062C2-BAE6-4A56-AA6F-24A6FBAA44E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
