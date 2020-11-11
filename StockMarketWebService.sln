@@ -5,11 +5,13 @@ VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockMarketWebService", "StockMarketWebService\StockMarketWebService.csproj", "{5CEF7B97-4B99-44BD-830D-9B742F10027E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompanyMicroService", "CompanyMicroService\CompanyMicroService.csproj", "{02E062C2-BAE6-4A56-AA6F-24A6FBAA44E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompanyMicroService", "CompanyMicroService\CompanyMicroService.csproj", "{02E062C2-BAE6-4A56-AA6F-24A6FBAA44E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SectorMicroService", "SectorMicroService\SectorMicroService.csproj", "{9B27380B-EA36-4660-B938-33C2A1596080}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SectorMicroService", "SectorMicroService\SectorMicroService.csproj", "{9B27380B-EA36-4660-B938-33C2A1596080}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockExchangeMicroService", "StockExchangeMicroService\StockExchangeMicroService.csproj", "{BCE3A424-ED86-4AF2-9A33-6ABE6378A302}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockExchangeMicroService", "StockExchangeMicroService\StockExchangeMicroService.csproj", "{BCE3A424-ED86-4AF2-9A33-6ABE6378A302}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationMicroService", "AuthenticationMicroService\AuthenticationMicroService.csproj", "{690265AF-45DC-48D0-8A29-EDD5BACC388A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{BCE3A424-ED86-4AF2-9A33-6ABE6378A302}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCE3A424-ED86-4AF2-9A33-6ABE6378A302}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCE3A424-ED86-4AF2-9A33-6ABE6378A302}.Release|Any CPU.Build.0 = Release|Any CPU
+		{690265AF-45DC-48D0-8A29-EDD5BACC388A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{690265AF-45DC-48D0-8A29-EDD5BACC388A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{690265AF-45DC-48D0-8A29-EDD5BACC388A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{690265AF-45DC-48D0-8A29-EDD5BACC388A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
