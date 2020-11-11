@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using StockExchangeMicroService.Repositories;
@@ -12,6 +14,7 @@ using StockMarketWebService.Models;
 
 namespace StockExchangeMicroService.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class StockExchangeController : Controller
     {
@@ -41,9 +44,23 @@ namespace StockExchangeMicroService.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] StockExchange ex)
         {
-            var res = _repo.addNewExchange(ex);
-            if (res) return Ok(new Response { StatusCode = "Success", Message = "Exchange added successfully" });
-            else return BadRequest(new Response { StatusCode = "Failed", Message = "Exchange adding unsuccessful" });
+            ClaimsIdentity identity = HttpContext.User.Identity as ClaimsIdentity;
+            string role = identity.FindFirst("Role").Value;
+            if (role == "Admin")
+            {
+                var res = _repo.addNewExchange(ex);
+                if (res) return Ok(new Response { StatusCode = "Success", Message = "Exchange added successfully" });
+                else return BadRequest(new Response { StatusCode = "Failed", Message = "Exchange adding unsuccessful" });
+            }
+            else
+            {
+                return Unauthorized(new Response
+                {
+                    StatusCode = "Failed",
+                    Message = "Exchange Creation Unsuccessful. Only Admins can be allowed"
+                });
+            }
+
         }
 
 

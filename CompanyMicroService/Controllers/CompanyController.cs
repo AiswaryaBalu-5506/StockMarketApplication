@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using CompanyMicroService.Models;
 using CompanyMicroService.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
@@ -11,6 +13,7 @@ using StockMarketWebService.Models;
 
 namespace CompanyMicroService.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CompanyController : ControllerBase
@@ -58,9 +61,20 @@ namespace CompanyMicroService.Controllers
         [HttpPost]
         public async Task<IActionResult> PostCompany([FromBody] AddCompanyModel company)
         {
-            var result = await _repo.AddCompany(company);
-            if (result) return Ok(new Response { Status = "Success", Message = "Company Posted successfully" });
-            else return BadRequest(new Response { Status = "Failed", Message = "Company creation unsuccessfully" });
+            ClaimsIdentity identity = HttpContext.User.Identity as ClaimsIdentity;
+            string role = identity.FindFirst("Role").Value;
+            if (role == "Admin")
+            {
+                var result = await _repo.AddCompany(company);
+                if (result) return Ok(new Response { Status = "Success", Message = "Company Posted successfully" });
+                else return BadRequest(new Response { Status = "Failed", Message = "Company creation unsuccessfully" });
+            }
+            else
+            {
+                return Unauthorized(new Response { Status = "Failed", Message = "Company creation unsuccessfully. Only Admins can create" });
+            }
+
+                
         }
 
         // POST: api/Company/IPO
@@ -68,9 +82,20 @@ namespace CompanyMicroService.Controllers
         [Route("IPO")]
         public IActionResult PostIPO([FromBody] AddIPOModel ipo)
         {
-            var result = _repo.addIPO(ipo);
-            if (result) return Ok(new Response { Status = "Success", Message = "IPO Posted successfully" });
-            else return BadRequest(new Response { Status = "Failed", Message = "IPO creation unsuccessfully" });
+            ClaimsIdentity identity = HttpContext.User.Identity as ClaimsIdentity;
+            string role = identity.FindFirst("Role").Value;
+            if (role == "Admin")
+            {
+                var result = _repo.addIPO(ipo);
+                if (result) return Ok(new Response { Status = "Success", Message = "IPO Posted successfully" });
+                else return BadRequest(new Response { Status = "Failed", Message = "IPO creation unsuccessfully" });
+            }
+            else
+            {
+                return Unauthorized(new Response { Status = "Failed", Message = "IPO creation unsuccessfully. Only Admins can create" });
+            }
+
+
         }
 
         // POST: api/Company/StockPrice
@@ -78,9 +103,20 @@ namespace CompanyMicroService.Controllers
         [Route("StockPrice")]
         public IActionResult PostStockPrice([FromBody] AddStockPriceModel sp)
         {
-            var result = _repo.addStockPrice(sp);
-            if (result) return Ok(new Response { Status = "Success", Message = "Stock Price Posted successfully" });
-            else return BadRequest(new Response { Status = "Failed", Message = "Stock Price creation unsuccessfully" });
+            ClaimsIdentity identity = HttpContext.User.Identity as ClaimsIdentity;
+            string role = identity.FindFirst("Role").Value;
+            if (role == "Admin")
+            {
+
+                var result = _repo.addStockPrice(sp);
+                if (result) return Ok(new Response { Status = "Success", Message = "Stock Price Posted successfully" });
+                else return BadRequest(new Response { Status = "Failed", Message = "Stock Price creation unsuccessfully" });
+            }
+            else
+            {
+                return Unauthorized(new Response { Status = "Failed", Message = "Stock Price creation unsuccessfully. Only Admins can create" });
+            }
+
         }
 
         /*
