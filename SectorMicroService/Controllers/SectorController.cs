@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
@@ -10,6 +12,7 @@ using StockMarketWebService.Models;
 
 namespace SectorMicroService.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SectorController : ControllerBase
@@ -24,7 +27,7 @@ namespace SectorMicroService.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_repo.getSectors());
+           return Ok(_repo.getSectors());
         }
 
         // GET: api/Sector/5
@@ -40,9 +43,19 @@ namespace SectorMicroService.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Sectors sector)
         {
-            var res = _repo.addSector(sector);
-            if (res) return Ok(new Response { StatusCode = "Success", Message = "Sector Created Successfully" });
-            else return BadRequest(new Response { StatusCode = "Failed", Message = "Sector Creation Unsuccessful" });
+            ClaimsIdentity identity = HttpContext.User.Identity as ClaimsIdentity;
+            string role = identity.FindFirst("Role").Value;
+            if (role == "Admin")
+            {
+                var res = _repo.addSector(sector);
+                if (res) return Ok(new Response { StatusCode = "Success", Message = "Sector Created Successfully" });
+                else return BadRequest(new Response { StatusCode = "Failed", Message = "Sector Creation Unsuccessful" });
+            }
+            else
+            {
+                return Unauthorized(new Response { StatusCode = "Failed", 
+                                                   Message = "Sector Creation Unsuccessful. Only Admins can be allowed" });
+            }                
         }
 
         /*

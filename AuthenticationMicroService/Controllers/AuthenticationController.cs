@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AuthenticationMicroService.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +18,7 @@ using StockMarketWebService.Models;
 
 namespace AuthenticationMicroService.Controllers
 {
+    
     [Route("api/[controller]")]
     public class AuthenticationController : Controller
     {
@@ -32,15 +34,18 @@ namespace AuthenticationMicroService.Controllers
         [Route("Login")]
         public IActionResult Login([FromBody] LoginModel lmodel)
         {
+            ClaimsIdentity identity = HttpContext.User.Identity as ClaimsIdentity;
+
             var user = _db.Users.Where(u => u.UserName == lmodel.Username).FirstOrDefault();
             if (user != null && user.Password == lmodel.Password)
             {
                 UserType userRole = user.UserType;
-                
+
                 var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),                    
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim("Role", userRole.ToString())
                 };
                 //authClaims.Add(new Claim("Role", userRole));
 

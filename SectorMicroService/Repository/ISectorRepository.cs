@@ -11,5 +11,7 @@ namespace SectorMicroService.Repository
         public IEnumerable<Sectors> getSectors();
         public IEnumerable<Company> getCompaniesInSector(int sectorID);
         public bool addSector(Sectors sector);
+
+        
     }
 }

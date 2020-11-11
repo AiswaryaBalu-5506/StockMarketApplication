@@ -22,7 +22,7 @@ namespace SectorMicroService.Services
         {
             _db.Sectors.Add(sector);
             var res = _db.SaveChanges();
-            return (res==0) ? true : false;            
+            return (res==1) ? true : false;            
         }
 
         public IEnumerable<Company> getCompaniesInSector(int sectorID)
