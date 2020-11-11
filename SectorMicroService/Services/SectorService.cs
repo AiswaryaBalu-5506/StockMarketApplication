@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using SectorMicroService.Models;
 using SectorMicroService.Repository;
 using StockMarketWebService.Models;
@@ -15,6 +16,13 @@ namespace SectorMicroService.Services
         public SectorService(SectorAppDbContext db)
         {
             _db = db;
+        }
+
+        public bool addSector(Sectors sector)
+        {
+            _db.Sectors.Add(sector);
+            var res = _db.SaveChanges();
+            return (res==0) ? true : false;            
         }
 
         public IEnumerable<Company> getCompaniesInSector(int sectorID)

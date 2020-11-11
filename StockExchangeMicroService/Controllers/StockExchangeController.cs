@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using StockExchangeMicroService.Repositories;
+using StockMarketWebService.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -34,13 +36,18 @@ namespace StockExchangeMicroService.Controllers
             return Ok(_repo.getCompaniesInAExchange(ExchangeID));
         }
 
-        /*
+        
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public IActionResult Post([FromBody] StockExchange ex)
         {
+            var res = _repo.addNewExchange(ex);
+            if (res) return Ok(new Response { StatusCode = "Success", Message = "Exchange added successfully" });
+            else return BadRequest(new Response { StatusCode = "Failed", Message = "Exchange adding unsuccessful" });
         }
 
+
+        /*
         // PUT api/<controller>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]string value)
@@ -53,5 +60,11 @@ namespace StockExchangeMicroService.Controllers
         {
         }
         */
+    }
+
+    internal class Response
+    {
+        public string StatusCode { get; set; }
+        public string Message { get; set; }
     }
 }

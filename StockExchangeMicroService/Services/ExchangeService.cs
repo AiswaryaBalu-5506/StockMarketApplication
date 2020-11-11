@@ -17,6 +17,14 @@ namespace StockExchangeMicroService.Services
             _db = db;
         }
 
+        public bool addNewExchange(StockExchange exchange)
+        {
+            var res = _db.StockExchanges.Add(exchange);
+            _db.SaveChanges();
+            if (res != null) return true;
+            else return false;
+        }
+
         public IEnumerable<Company> getCompaniesInAExchange(int exchangeID)
         {
             return _db.Companies.Include(c => c.Sector).Include(co => co.stockCodes).Include(com => com.CompaniesListed)

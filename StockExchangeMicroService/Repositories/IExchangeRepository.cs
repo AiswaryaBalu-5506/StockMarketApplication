@@ -10,5 +10,6 @@ namespace StockExchangeMicroService.Repositories
     {
         public IEnumerable<StockExchange> getStockEchanges();
         public IEnumerable<Company> getCompaniesInAExchange(int exchangeID);
+        public bool addNewExchange(StockExchange exchange);
     }
 }
