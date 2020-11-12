@@ -16,5 +16,7 @@ namespace CompanyMicroService.Repositories
         public Task<bool> AddCompany(AddCompanyModel company);
         public bool addIPO(AddIPOModel ipo);
         public bool addStockPrice(AddStockPriceModel sp);
+        public bool updateCOmpanyDetails(int id, UpdateCompanyDetailsModel c);
+        public bool updateIPODetails(int id, UpdateIPODetailsModel ipod);
     }
 }

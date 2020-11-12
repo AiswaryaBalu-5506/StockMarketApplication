@@ -119,6 +119,45 @@ namespace CompanyMicroService.Controllers
 
         }
 
+        // PUT: api/Company/5
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, UpdateCompanyDetailsModel company)
+        {
+            ClaimsIdentity identity = HttpContext.User.Identity as ClaimsIdentity;
+            string role = identity.FindFirst("Role").Value;
+            if (role == "Admin")
+            {
+                var res = _repo.updateCOmpanyDetails(id, company);
+                if (res) {return Ok(new Response { Status = "Success", Message = "Company Updated successfully" }); }
+                else { return BadRequest(new Response { Status = "Failed", Message = "Company Updation unsuccessful" }); }
+            }
+            else
+            {
+                return Unauthorized(new Response { Status = "Failed", Message = "Company Updation unsuccessful. Only Admins can update" });
+            }
+        }
+
+        // PUT: api/Company/IPO/5
+        [HttpPut]
+        [Route("IPO/{id}")]
+        public IActionResult PutIPO(int id, UpdateIPODetailsModel iPODetails)
+        {
+            ClaimsIdentity identity = HttpContext.User.Identity as ClaimsIdentity;
+            string role = identity.FindFirst("Role").Value;
+            if (role == "Admin")
+            {
+                var res = _repo.updateIPODetails(id, iPODetails);
+                if (res) { return Ok(new Response { Status = "Success", Message = "IPO Updated successfully" }); }
+                else { return BadRequest(new Response { Status = "Failed", Message = "IPO Updation unsuccessful" }); }
+            }
+            else
+            {
+                return Unauthorized(new Response { Status = "Failed", Message = "IPO Updation unsuccessful. Only Admins can update" });
+            }
+        }
+
+
+
         /*
         // PUT: api/Company/5
         [HttpPut("{id}")]

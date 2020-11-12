@@ -30,6 +30,7 @@ namespace StockMarketWebService.Models
         public int SectorID { get; set; }
 
         public string WriteUp { get; set; }
+        public bool Active { get; set; }
 
         [Required]
         public IEnumerable<StockCodes> stockCodes { get; set; }

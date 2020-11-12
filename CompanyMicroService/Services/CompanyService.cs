@@ -32,6 +32,7 @@ namespace CompanyMicroService.Services
                 Sector = sectorInfo,
                 WriteUp = model.WriteUp,
                 stockCodes = null,
+                Active = model.Active
             };
 
             await using var transaction = await _db.Database.BeginTransactionAsync();
@@ -122,6 +123,32 @@ namespace CompanyMicroService.Services
         public IEnumerable<Company> getMatchingCompanies(string nOfCompany)
         {
             return _db.Companies.Where(c => c.CompanyName.Contains(nOfCompany)).Include(c => c.Sector).Include(co => co.stockCodes).Include(com => com.CompaniesListed).ToList();            
+        }
+
+        public bool updateCOmpanyDetails(int CompanyID, UpdateCompanyDetailsModel companyToBeUpdated)
+        {
+            var actualCompnay = _db.Companies.Where(c => c.CompanyID == CompanyID).FirstOrDefault();
+            actualCompnay.CompanyName = companyToBeUpdated.CompanyName;
+            actualCompnay.TurnOver = companyToBeUpdated.TurnOver;
+            actualCompnay.CEO = companyToBeUpdated.CEO;
+            actualCompnay.BoardOfDirectors = companyToBeUpdated.BoardOfDirectors;
+            actualCompnay.WriteUp = companyToBeUpdated.WriteUp;
+            actualCompnay.Active = companyToBeUpdated.Active;
+            _db.Companies.Update(actualCompnay);
+            var res = _db.SaveChanges();
+            return (res == 1) ? true : false;
+        }
+
+        public bool updateIPODetails(int id, UpdateIPODetailsModel ipod)
+        {
+            var actualIPO = _db.IPODetails.Where(ipo => ipo.ipoID == id).FirstOrDefault();
+            actualIPO.PricePerShare = ipod.PricePerShare;
+            actualIPO.OpeningDate = ipod.OpeningDate;
+            actualIPO.TotalAvailableShares = ipod.TotalAvailableShares;
+            actualIPO.Remarks = ipod.Remarks;
+            _db.IPODetails.Update(actualIPO);
+            var res = _db.SaveChanges();
+            return (res == 1) ? true : false;
         }
     }
 }

@@ -37,33 +37,41 @@ namespace AuthenticationMicroService.Controllers
             ClaimsIdentity identity = HttpContext.User.Identity as ClaimsIdentity;
 
             var user = _db.Users.Where(u => u.UserName == lmodel.Username).FirstOrDefault();
-            if (user != null && user.Password == lmodel.Password)
-            {
-                UserType userRole = user.UserType;
 
-                var authClaims = new List<Claim>
+            if(user.confirmed == true)
+            {
+                if (user != null && user.Password == lmodel.Password)
+                {
+                    UserType userRole = user.UserType;
+
+                    var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim("Role", userRole.ToString())
                 };
-                //authClaims.Add(new Claim("Role", userRole));
+                    //authClaims.Add(new Claim("Role", userRole));
 
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["JWT:ValidIssuer"],
-                    audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddHours(3),
-                    claims: authClaims,
-                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                    );
-                return Ok(new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
-                });
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+                    var token = new JwtSecurityToken(
+                        issuer: _configuration["JWT:ValidIssuer"],
+                        audience: _configuration["JWT:ValidAudience"],
+                        expires: DateTime.Now.AddHours(3),
+                        claims: authClaims,
+                        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                        );
+                    return Ok(new
+                    {
+                        token = new JwtSecurityTokenHandler().WriteToken(token),
+                        expiration = token.ValidTo
+                    });
+                }
+                return Unauthorized();
             }
-            return Unauthorized();
+            else
+            {
+                return Unauthorized(new Response { Status = "UnAuthorised", Message = "Please complete E-mail verification to login"});
+            }            
         }
 
         [HttpPost]
