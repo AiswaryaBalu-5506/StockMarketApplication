@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AuthenticationMicroService.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -17,8 +18,7 @@ using StockMarketWebService.Models;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace AuthenticationMicroService.Controllers
-{
-    
+{    
     [Route("api/[controller]")]
     public class AuthenticationController : Controller
     {
@@ -38,39 +38,50 @@ namespace AuthenticationMicroService.Controllers
 
             var user = _db.Users.Where(u => u.UserName == lmodel.Username).FirstOrDefault();
 
-            if(user.confirmed == true)
+            if (user != null)
             {
-                if (user != null && user.Password == lmodel.Password)
+                if (user.Password == lmodel.Password)
                 {
-                    UserType userRole = user.UserType;
-
-                    var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim("Role", userRole.ToString())
-                };
-                    //authClaims.Add(new Claim("Role", userRole));
-
-                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-                    var token = new JwtSecurityToken(
-                        issuer: _configuration["JWT:ValidIssuer"],
-                        audience: _configuration["JWT:ValidAudience"],
-                        expires: DateTime.Now.AddHours(3),
-                        claims: authClaims,
-                        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                        );
-                    return Ok(new
+                    if (user.confirmed == true)
                     {
-                        token = new JwtSecurityTokenHandler().WriteToken(token),
-                        expiration = token.ValidTo
-                    });
+                        UserType userRole = user.UserType;
+
+                        var authClaims = new List<Claim>
+                        {
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim("Role", userRole.ToString())
+                        };
+                        //authClaims.Add(new Claim("Role", userRole));
+
+                        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+                        var token = new JwtSecurityToken(
+                            issuer: _configuration["JWT:ValidIssuer"],
+                            audience: _configuration["JWT:ValidAudience"],
+                            expires: DateTime.Now.AddHours(3),
+                            claims: authClaims,
+                            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                            );
+                        return Ok(new
+                        {
+                            token = new JwtSecurityTokenHandler().WriteToken(token),
+                            expiration = token.ValidTo
+                        });
+                    }
+                    else
+                    {
+                        return Unauthorized(new Response { Status = "unAuthorised", Message = "Please complete E-mail verification to login" });
+                    }
                 }
-                return Unauthorized();
+                else
+                {
+                    return Unauthorized(new Response { Status = "unAuthorised", Message = "UserName or Password incorrect" });
+                }
+
             }
             else
             {
-                return Unauthorized(new Response { Status = "UnAuthorised", Message = "Please complete E-mail verification to login"});
+                return Unauthorized(new Response { Status = "UnAuthorised", Message = "Please register and complete E-mail verification to login" });
             }            
         }
 
