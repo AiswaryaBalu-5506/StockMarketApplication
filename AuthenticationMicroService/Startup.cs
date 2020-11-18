@@ -57,8 +57,9 @@ namespace AuthenticationMicroService
                     ValidIssuer = Configuration["JWT:ValidIssuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
                 };
-            });        
-        services.AddControllers();
+            });
+            services.Configure<EmailSettingsModel>(Configuration.GetSection("EmailSettings"));
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

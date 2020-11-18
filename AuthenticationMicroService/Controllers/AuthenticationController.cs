@@ -6,12 +6,17 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AuthenticationMicroService.Models;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
+using MimeKit.Text;
 using StockMarketWebService.DataEntities;
 using StockMarketWebService.Models;
 
@@ -24,10 +29,12 @@ namespace AuthenticationMicroService.Controllers
     {
         private readonly AuthenticationAppDbContext _db;
         private readonly IConfiguration _configuration;
-        public AuthenticationController(AuthenticationAppDbContext db, IConfiguration config)
+        private readonly IOptions<EmailSettingsModel> _emailSettings;
+        public AuthenticationController(AuthenticationAppDbContext db, IConfiguration config, IOptions<EmailSettingsModel> emailSettings)
         {
             _db = db;
             _configuration = config;
+            _emailSettings = emailSettings;
         }
 
         [HttpPost]
@@ -95,12 +102,66 @@ namespace AuthenticationMicroService.Controllers
 
 
             _db.Users.Add(model);
-            _db.SaveChanges();
-            /* if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-            */
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+            var result = _db.SaveChanges();
+            if (result == 1)
+            {
+                //send email verification
+
+                // create email message
+                var email = new MimeMessage();
+                email.From.Add(MailboxAddress.Parse(_emailSettings.Value.smtpUserName));
+                email.To.Add(MailboxAddress.Parse(model.email));
+                email.Subject = "Please verify your email to proceed into Stock Market Application";
+                email.Body = new TextPart(TextFormat.Html) 
+                             { Text = "<h3>Please copy paste the following URL.</h3> <br> " +
+                                      "URL: https://localhost:44349/api/Authentication/VerifyEmail/" + model.email };
+
+                // send email
+                using var smtp = new SmtpClient();
+                smtp.Connect("smtp.ethereal.email", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate(_emailSettings.Value.smtpUserName, _emailSettings.Value.smtpPassword);
+                smtp.Send(email);
+                smtp.Disconnect(true);
+
+                return Ok(new Response { Status = "Success", Message = "User created successfully! Please complete email verification." });                
+            }                
+            else return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+            
+            
         }
+
+        [HttpGet]
+        [Route("VerifyEmail/{address}")]
+        public IActionResult verifyEmail(string address)
+        {
+            if(address != null)
+            {
+                var user = _db.Users.Where(u => u.email == address).SingleOrDefault();
+                if(user != null)
+                {
+                    user.confirmed = true;
+                    _db.Users.Update(user);
+                    var res = _db.SaveChanges();
+                    if(res == 1)
+                    {
+                        return Ok(new Response { Status = "Success", Message = "Email verified." });
+                    }
+                    else
+                    {
+                        return NotFound(new Response { Status = "Error", Message = "Internal Error." });
+                    }
+                }
+                else
+                {
+                    return BadRequest(new Response { Status = "Error", Message = "Email address not found. Please register to verify email" });
+                }
+            }
+            else
+            {
+                return BadRequest(new Response { Status = "Error", Message = "Email address not found in URL" });
+            }
+        }
+
     }
 
     internal class Response
