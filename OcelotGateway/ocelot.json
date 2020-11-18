@@ -46,7 +46,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 44321
+          "Port": 44380
         }
       ],
       "UpstreamPathTemplate": "/StockExchange/{catchAll}"
@@ -54,6 +54,6 @@
 
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:51433"
+    "BaseUrl": "https://localhost:44354"
   }
 }
